@@ -660,9 +660,9 @@ export default class Query<T extends Model = Model> {
       return null
     }
 
-    if (Object.keys(this.load).length > 0) {
-      item = new this.model(item)
+    item = new this.model(item)
 
+    if (Object.keys(this.load).length > 0) {
       let items = this.hook.executeSelectHook('beforeRelations', [item])
       item = items[0]
 
