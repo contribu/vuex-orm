@@ -26,6 +26,10 @@ const isObject = (value: any) => {
 }
 
 const VueCopy = (src: any, dest: any) => {
+  console.log('VueCopy src dest')
+  console.log(src)
+  console.log(dest)
+
   if (Array.isArray(src) && Array.isArray(dest)) {
     for (let idx = 0; idx < src.length; idx++) {
       if (!VueCopy(src[idx], dest[idx])) {
