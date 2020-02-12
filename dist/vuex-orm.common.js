@@ -4404,7 +4404,13 @@ var Query = /** @class */ (function () {
         var _this = this;
         var instances = this.hydrateMany(records);
         this.commit('create', instances, function () {
-            _this.model.database().customCopy(instances, _this.state.data);
+            var copy = _this.model.database().customCopy;
+            if (copy) {
+                copy(instances, _this.state.data);
+            }
+            else {
+                _this.state.data = __assign({}, _this.state.data, instances);
+            }
         });
         return this.map(instances); // TODO: Delete "as ..." when model type coverage reaches 100%.
     };
@@ -4507,8 +4513,13 @@ var Query = /** @class */ (function () {
         var _this = this;
         instances = this.updateIndexes(instances);
         this.commit('update', instances, function () {
-            _this.model.database().customCopy(instances, _this.state.data);
-            // this.state.data = { ...this.state.data, ...instances }
+            var copy = _this.model.database().customCopy;
+            if (copy) {
+                copy(instances, _this.state.data);
+            }
+            else {
+                _this.state.data = __assign({}, _this.state.data, instances);
+            }
         });
         return this.map(instances);
     };

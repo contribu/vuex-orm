@@ -745,7 +745,12 @@ export default class Query<T extends Model = Model> {
     const instances = this.hydrateMany(records)
 
     this.commit('create', instances, () => {
-      this.model.database().customCopy(instances, this.state.data)
+      const copy = this.model.database().customCopy;
+      if (copy) {
+        copy(instances, this.state.data)
+      } else {
+        this.state.data = { ...this.state.data, ...instances }
+      }
     })
 
     return this.map(instances) as Data.Collection<T> // TODO: Delete "as ..." when model type coverage reaches 100%.
@@ -876,8 +881,12 @@ export default class Query<T extends Model = Model> {
     instances = this.updateIndexes(instances)
 
     this.commit('update', instances, () => {
-      this.model.database().customCopy(instances, this.state.data)
-      // this.state.data = { ...this.state.data, ...instances }
+      const copy = this.model.database().customCopy
+      if (copy) {
+        copy(instances, this.state.data)
+      } else {
+        this.state.data = { ...this.state.data, ...instances }
+      }
     })
 
     return this.map(instances)
