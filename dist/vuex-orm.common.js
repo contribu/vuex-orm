@@ -4406,7 +4406,9 @@ var Query = /** @class */ (function () {
         this.commit('create', instances, function () {
             var copy = _this.model.database().customCopy;
             if (copy) {
-                copy(instances, _this.state.data);
+                if (!copy(instances, _this.state.data)) {
+                    _this.state.data = __assign({}, _this.state.data, instances);
+                }
             }
             else {
                 _this.state.data = __assign({}, _this.state.data, instances);
@@ -4515,7 +4517,9 @@ var Query = /** @class */ (function () {
         this.commit('update', instances, function () {
             var copy = _this.model.database().customCopy;
             if (copy) {
-                copy(instances, _this.state.data);
+                if (!copy(instances, _this.state.data)) {
+                    _this.state.data = __assign({}, _this.state.data, instances);
+                }
             }
             else {
                 _this.state.data = __assign({}, _this.state.data, instances);

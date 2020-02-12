@@ -747,7 +747,9 @@ export default class Query<T extends Model = Model> {
     this.commit('create', instances, () => {
       const copy = this.model.database().customCopy;
       if (copy) {
-        copy(instances, this.state.data)
+        if (!copy(instances, this.state.data)) {
+          this.state.data = { ...this.state.data, ...instances }
+        }
       } else {
         this.state.data = { ...this.state.data, ...instances }
       }
@@ -883,7 +885,9 @@ export default class Query<T extends Model = Model> {
     this.commit('update', instances, () => {
       const copy = this.model.database().customCopy
       if (copy) {
-        copy(instances, this.state.data)
+        if (!copy(instances, this.state.data)) {
+          this.state.data = { ...this.state.data, ...instances }
+        }
       } else {
         this.state.data = { ...this.state.data, ...instances }
       }
