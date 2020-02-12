@@ -17,49 +17,6 @@ import Loader from './loaders/Loader'
 import Rollcaller from './rollcallers/Rollcaller'
 import Hook from './hooks/Hook'
 
-const Vue = require('vue')
-
-// https://medium.com/@lubaka.a/how-to-remove-lodash-performance-improvement-b306669ad0e1
-const isObject = (value: any) => {
-  const type = typeof value
-  return !!value && (type === 'object' || type === 'function')
-}
-
-const VueCopy = (src: any, dest: any) => {
-  console.log('VueCopy src dest')
-  console.log(src)
-  console.log(dest)
-
-  if (Array.isArray(src) && Array.isArray(dest)) {
-    for (let idx = 0; idx < src.length; idx++) {
-      if (!VueCopy(src[idx], dest[idx])) {
-        Vue.set(dest, idx, src[idx])
-      }
-    }
-    // https://qiita.com/tmak_tsukamoto/items/e303328681f20a036530
-    if (dest.length > src.length) {
-      dest.splice(src.length)
-    }
-    return true
-  }
-
-  if (isObject(src) && isObject(dest)) {
-    for (const key in src) {
-      if (!VueCopy(src[key], dest[key])) {
-        Vue.set(dest, key, src[key])
-      }
-    }
-    for (const key in dest) {
-      if (!src.hasOwnProperty(key)) {
-        Vue.delete(dest, key)
-      }
-    }
-    return true
-  }
-
-  return src === dest
-}
-
 export type UpdateClosure = (record: Data.Record) => void
 
 export type Predicate = (item: Data.Record) => boolean
@@ -919,7 +876,7 @@ export default class Query<T extends Model = Model> {
     instances = this.updateIndexes(instances)
 
     this.commit('update', instances, () => {
-      VueCopy(instances, this.state.data)
+      this.model.database().customCopy(instances, this.state.data)
       // this.state.data = { ...this.state.data, ...instances }
     })
 

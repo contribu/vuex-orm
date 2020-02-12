@@ -18,6 +18,8 @@ export default class Database {
    */
   namespace!: string
 
+  customCopy!: any
+
   /**
    * The list of entities to be registered to the Vuex Store. It contains
    * models and modules with its name.
@@ -33,9 +35,10 @@ export default class Database {
   /**
    * Initialize the database before a user can start using it.
    */
-  start (store: Vuex.Store<any>, namespace: string): void {
+  start (store: Vuex.Store<any>, namespace: string, customCopy: any): void {
     this.store = store
     this.namespace = namespace
+    this.customCopy = customCopy
 
     this.registerModules()
 

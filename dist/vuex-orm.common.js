@@ -525,9 +525,10 @@ var Container = /** @class */ (function () {
 var install = (function (database, options) {
     if (options === void 0) { options = {}; }
     var namespace = options.namespace || 'entities';
+    var customCopy = options.customCopy;
     return function (store) {
         Container.register(database);
-        database.start(store, namespace);
+        database.start(store, namespace, customCopy);
     };
 });
 
@@ -3844,43 +3845,6 @@ var Hook = /** @class */ (function () {
     return Hook;
 }());
 
-var Vue = require('vue');
-// https://medium.com/@lubaka.a/how-to-remove-lodash-performance-improvement-b306669ad0e1
-var isObject = function (value) {
-    var type = typeof value;
-    return !!value && (type === 'object' || type === 'function');
-};
-var VueCopy = function (src, dest) {
-    console.log('VueCopy src dest');
-    console.log(src);
-    console.log(dest);
-    if (Array.isArray(src) && Array.isArray(dest)) {
-        for (var idx = 0; idx < src.length; idx++) {
-            if (!VueCopy(src[idx], dest[idx])) {
-                Vue.set(dest, idx, src[idx]);
-            }
-        }
-        // https://qiita.com/tmak_tsukamoto/items/e303328681f20a036530
-        if (dest.length > src.length) {
-            dest.splice(src.length);
-        }
-        return true;
-    }
-    if (isObject(src) && isObject(dest)) {
-        for (var key in src) {
-            if (!VueCopy(src[key], dest[key])) {
-                Vue.set(dest, key, src[key]);
-            }
-        }
-        for (var key in dest) {
-            if (!src.hasOwnProperty(key)) {
-                Vue.delete(dest, key);
-            }
-        }
-        return true;
-    }
-    return src === dest;
-};
 var Query = /** @class */ (function () {
     /**
      * Create a new Query instance.
@@ -4543,7 +4507,7 @@ var Query = /** @class */ (function () {
         var _this = this;
         instances = this.updateIndexes(instances);
         this.commit('update', instances, function () {
-            VueCopy(instances, _this.state.data);
+            _this.model.database().customCopy(instances, _this.state.data);
             // this.state.data = { ...this.state.data, ...instances }
         });
         return this.map(instances);
@@ -5284,9 +5248,10 @@ var Database = /** @class */ (function () {
     /**
      * Initialize the database before a user can start using it.
      */
-    Database.prototype.start = function (store, namespace) {
+    Database.prototype.start = function (store, namespace, customCopy) {
         this.store = store;
         this.namespace = namespace;
+        this.customCopy = customCopy;
         this.registerModules();
         this.createSchema();
     };
