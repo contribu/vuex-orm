@@ -4402,11 +4402,9 @@ var Query = /** @class */ (function () {
      */
     Query.prototype.insertMany = function (records) {
         var _this = this;
-        if (Object.keys(records).length === 0)
-            return [];
         var instances = this.hydrateMany(records);
         this.commit('create', instances, function () {
-            _this.state.data = __assign({}, _this.state.data, instances);
+            _this.model.database().customCopy(instances, _this.state.data);
         });
         return this.map(instances); // TODO: Delete "as ..." when model type coverage reaches 100%.
     };
@@ -4458,8 +4456,6 @@ var Query = /** @class */ (function () {
      * Update all records.
      */
     Query.prototype.updateMany = function (records) {
-        if (Object.keys(records).length === 0)
-            return [];
         var instances = this.combine(records);
         return this.commitUpdate(instances); // TODO: Delete "as ..." when model type coverage reaches 100%.
     };

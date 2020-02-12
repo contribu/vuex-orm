@@ -742,12 +742,10 @@ export default class Query<T extends Model = Model> {
    * Insert list of records in the state.
    */
   insertMany (records: Data.Records): Data.Collection<T> {
-    if (Object.keys(records).length === 0) return []
-
     const instances = this.hydrateMany(records)
 
     this.commit('create', instances, () => {
-      this.state.data = { ...this.state.data, ...instances }
+      this.model.database().customCopy(instances, this.state.data)
     })
 
     return this.map(instances) as Data.Collection<T> // TODO: Delete "as ..." when model type coverage reaches 100%.
@@ -813,8 +811,6 @@ export default class Query<T extends Model = Model> {
    * Update all records.
    */
   updateMany (records: Data.Records): Data.Collection<T> {
-    if (Object.keys(records).length === 0) return []
-
     const instances = this.combine(records)
 
     return this.commitUpdate(instances) as Data.Collection<T> // TODO: Delete "as ..." when model type coverage reaches 100%.
