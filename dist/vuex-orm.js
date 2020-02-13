@@ -5417,16 +5417,25 @@
 	     */
 	    Database.prototype.createBindingModel = function (model) {
 	        var database = this;
-	        var c = /** @class */ (function (_super) {
-	            __extends(class_1, _super);
-	            function class_1() {
-	                return _super !== null && _super.apply(this, arguments) || this;
-	            }
-	            class_1.store = function () {
-	                return database.store;
-	            };
-	            return class_1;
-	        }(model));
+	        var c;
+	        // When utilising code targeted at ES5 mixed with code targeted at ES6
+	        // causes a runtime error when using mixin classes.
+	        // Nuxt.js is a good example edge-case.
+	        try {
+	            c = Function('model', 'database', "\n      return class extends model {\n        static store () {\n          return database.store\n        }\n      }\n    ")(model, database);
+	        }
+	        catch (_a) {
+	            c = /** @class */ (function (_super) {
+	                __extends(class_1, _super);
+	                function class_1() {
+	                    return _super !== null && _super.apply(this, arguments) || this;
+	                }
+	                class_1.store = function () {
+	                    return database.store;
+	                };
+	                return class_1;
+	            }(model));
+	        }
 	        Object.defineProperty(c, 'name', { get: function () { return model.name; } });
 	        return c;
 	    };
