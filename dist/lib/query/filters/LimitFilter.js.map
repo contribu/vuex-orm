@@ -1,0 +1,1 @@
+{"version":3,"file":"LimitFilter.js","sourceRoot":"","sources":["../../../src/query/filters/LimitFilter.ts"],"names":[],"mappings":"AAIA;IAAA;IAOA,CAAC;IANC;;OAEG;IACI,kBAAM,GAAb,UAAwC,KAAY,EAAE,OAAsB;QAC1E,OAAO,OAAO,CAAC,KAAK,CAAC,KAAK,CAAC,YAAY,EAAE,KAAK,CAAC,YAAY,GAAG,KAAK,CAAC,WAAW,CAAC,CAAA;IAClF,CAAC;IACH,kBAAC;AAAD,CAAC,AAPD,IAOC"}
